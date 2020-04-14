@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "app_function": "src.app.server",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "a3-dash",
+        "runtime": "python3.7",
+        "s3_bucket": "zappa-504p2thu8"
+    }
+}

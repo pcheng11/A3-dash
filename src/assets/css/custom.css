@@ -1,0 +1,44 @@
+.card-body {
+    background-color: #000000;
+    border: none;
+    border-radius: .4rem;
+}
+#cases-title, #recovered-title, #deaths-title, .title {
+    color: #F4F4F4;
+}
+
+#world_cases {
+    color: #FFBF00
+}
+
+#world_deaths {
+    color: #FA5858
+}
+
+#world_recovered {
+    color: #31B404
+}
+.footnote {
+    color: grey
+}
+.header-class {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.news-div:hover, .news-piece:hover {
+    opacity: 0.8;
+}
+.news-div {
+    background: transparent;
+    padding:2px;
+}
+.news-piece {
+    background-color: black;
+    text-decoration: none !important;
+    margin: 2px;
+    border-bottom: 1px solid rgb(80, 77, 77) !important;
+}
+body {
+    background-color:#151515
+}
