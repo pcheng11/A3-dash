@@ -3,19 +3,19 @@
     border: none;
     border-radius: .4rem;
 }
-#cases-title, #recovered-title, #deaths-title, .title {
+#cases-title, #recovered-title, #deaths-title, .title, #country-name{
     color: #F4F4F4;
 }
 
-#world_cases {
+#country-cases, #world-cases {
     color: #FFBF00
 }
 
-#world_deaths {
+#country-deaths, #world-deaths {
     color: #FA5858
 }
 
-#world_recovered {
+#country-recovered, #world-recovered {
     color: #31B404
 }
 .footnote {

@@ -4,80 +4,117 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import config
-from action import get_countrys_data_map
+from action import get_countrys_data_map, get_country_data, name_diff_timeline_2_table
 import plotly.express as px
 from app import app
 import requests
 import json
 
-header_row_card = dbc.Row(
+header_row_card = dbc.Row([
+    dbc.Col(html.Div(
+        [
+            html.H4("World Cases", style={"color": "white"}),
+            html.H5(id="world-cases"),
+            html.H5(id="world-deaths"),
+            html.H5(id="world-recovered")
+        ],
+        style={
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "center",
+        }),
+            width=3,
+            style={
+                "padding": "10px",
+                "height": "100%"
+            }),
+    dbc.Col([
+        dbc.Row([
+            dbc.Col(html.Div(
+                [html.H4(id="country-name")],
+                style={
+                    "display": "flex",
+                    "flex-direction": "column",
+                    "align-items": "center",
+                }),
+                    width=3,
+                ),
+            dbc.Col(html.Div(
                 [
-                    dbc.Col(
-                        html.H1("COVID-19 INSIGHT"),
-                        className="title",
-                        width=3
-                    ),
-                    dbc.Col(
-                        [
-                            dbc.Row([
-                                dbc.Col(
-                                    html.Div([
-                                        html.H2(
-                                            id="world_cases"
-                                        ),
-                                        html.H4(
-                                            "Confirmed",
-                                            className="footnote"
-                                        )
-                                    ],
-                                    className="header-class"
-                                    ),
-                                    width=4
-                                ),
-                                dbc.Col(
-                                    html.Div([
-                                        html.H2(
-                                            id="world_deaths"
-                                        ),
-                                        html.H4(
-                                            "Deaths",
-                                            className="footnote"
-                                        )
-                                    ],
-                                    className="header-class"
-                                    ),
-                                    width=4
-                                ),
-                                dbc.Col(
-                                    html.Div([
-                                        html.H2(
-                                            id="world_recovered"
-                                        ),
-                                        html.H4(
-                                            "Recovered",
-                                            className="footnote"
-                                        )
-                                    ],
-                                    className="header-class"
-                                    ),
-                                    width=4
-                                )
-                            ])
-                        ]
-                    )
+                    html.H5(id="country-cases"),
+                    html.H5("Confirmed", className="footnote")
                 ],
-                style={"height": "10vh", "padding": '5px'}
-            )
+                style={
+                    "display": "flex",
+                    "flex-direction": "column",
+                    "align-items": "center",
+                }),
+                    width=3,
+                    ),
+            dbc.Col(html.Div(
+                [
+                    html.H5(id="country-deaths"),
+                    html.H5("Deaths", className="footnote")
+                ],
+                style={
+                    "display": "flex",
+                    "flex-direction": "column",
+                    "align-items": "center",
+                }),
+                    width=3,
+                ),
+            dbc.Col(
+                html.Div(
+                    [
+                        html.H5(id="country-recovered"),
+                        html.H5("Recovered", className="footnote")
+                    ],
+                    style={
+                        "display": "flex",
+                        "flex-direction": "column",
+                        "align-items": "center",
+                    }
+                ),
+                width=3,
+                )
+        ],
+                style={
+                    "padding": "10px",
+                    "height": "100%"
+                })
+    ],
+            width=9)
+],
+                          style={
+                              "height": "20vh",
+                              "padding": '2px'
+                          })
 
 @app.callback(
     [
-        Output('world_cases', 'children'),
-        Output('world_deaths', 'children'),
-        Output('world_recovered', 'children')
+        Output('country-name', 'children'),
+        Output('country-cases', 'children'),
+        Output('country-deaths', 'children'),
+        Output('country-recovered', 'children'),
     ],
-    [Input('intermediate-value', 'children')]
+    [Input('intermediate-value', 'children'), Input('click-value', 'children')]
 )
-def update_header(value):
+def update_header_country(children, country):
+
+    data = get_country_data(name_diff_timeline_2_table(country))
+    return data['country']['S'] + " Cases", data['cases']['N'] + " (+" + data['todayCases']['N'] + ")", data['deaths']['N'] + " (+" + data['todayDeaths']['N'] + ")", data['recovered']['N']
+
+
+@app.callback([
+    Output('world-cases', 'children'),
+    Output('world-deaths', 'children'),
+    Output('world-recovered', 'children'),
+], [Input('intermediate-value', 'children')])
+def update_header_world(children):
     response = requests.get("https://corona.lmao.ninja/all")
-    global_data = json.loads(response.content)
-    return global_data['cases'], global_data['deaths'], global_data['recovered']
+    data = json.loads(response.content)
+    print(data)
+    confirmed = 'Confirmed ' + str(data['cases']) + ' (+' + str(data['todayCases']) + ')'
+    deaths = 'Deaths ' + str(data['deaths']) + ' (+' + str(data['todayDeaths']) + ')'
+    recovered = 'Recovered ' + str(data['recovered'])
+    return confirmed, deaths, recovered

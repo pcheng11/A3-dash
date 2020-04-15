@@ -22,14 +22,6 @@ def get_news() -> dbc.ListGroup:
                     html.Div(
                         [   
                             dbc.Row([
-                                dbc.Col(
-                                    html.Img(
-                                        src=articles[i]['urlToImage'],
-                                        style={"height": "80%", "width": "100%"}
-                                    ),
-                                    width=4
-                                ),
-                                dbc.Col([
                                     html.H4(
                                         articles[i]['title'],
                                         style={"color": "white"}
@@ -42,7 +34,6 @@ def get_news() -> dbc.ListGroup:
                                         articles[i]['source']['name'] + ', ' + articles[i]['publishedAt'],
                                         style={"color": "white", "font-size": '1.2vh'}
                                     )
-                                ], width=8)
                             ])
                             
 

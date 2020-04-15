@@ -7,10 +7,36 @@ import plotly.graph_objects as go
 import pandas as pd
 import dash_bootstrap_components as dbc
 import dash_table
-from action import get_table_data, get_time_line
+from action import get_table_data, get_time_line, name_diff_table_2_timeline
 import json
+import dash
 
 dataframe = get_table_data()
+# def get_table_data() -> dbc.ListGroup:
+#     table_card = dbc.ListGroup(
+#                                 [
+#                                     dbc.ListGroupItem(
+#                                         [
+#                                             html.Div(
+#                                                 [
+#                                                     dbc.Row([
+#                                                         dbc.Col(
+#                                                             data[i]['country'],
+#                                                             width=6
+#                                                         ),
+#                                                         dbc.Col(
+#                                                             data[i]['cases'],
+#                                                             width=6
+#                                                         )
+#                                                     ])
+#                                                 ]
+#                                             )
+#                                         ]
+#                                     )
+#                                     for i in range(0, len(data))
+#                                 ]
+#                             )
+#     return table_card
 
 table = dash_table.DataTable(
         id="country-table",
@@ -73,7 +99,7 @@ table = dash_table.DataTable(
 
 line_chart_cases_card = dbc.Card(
                                 dbc.CardBody(
-                                    [   
+                                    [
                                         html.Div(
                                             'USA Cases Timeline',
                                             id='cases-title'
@@ -89,7 +115,7 @@ line_chart_cases_card = dbc.Card(
                                     ]
                                 ),
                                 style={"height": "100%"}
-                        ),      
+                        ),
 
 line_chart_deaths_card = dbc.Card(
                                 dbc.CardBody(
@@ -138,49 +164,64 @@ table_card = dbc.Card(
                         style={"height": "100%", "overflow-y": "scroll"}
                     )
 
+
+@app.callback(
+    [Output('click-value', "children")],
+    [Input('map', "clickData"), Input('country-table', 'selected_rows')]
+)
+def get_click(clickData, selected_rows):
+    country_name = "US"
+    selected_rows_country_name = ""
+    ctx = dash.callback_context
+    click_source = ""
+    if ctx.triggered:
+        click_source = ctx.triggered[0]['prop_id'].split('.')[0]
+        print(click_source)
+        if click_source == "map":
+            hover_text = clickData['points'][0]['hovertext']
+            country_name = name_diff_table_2_timeline(hover_text)
+        else:
+            country_name = dataframe.loc[int(selected_rows[0]), 'Country']
+            country_name = name_diff_table_2_timeline(country_name)
+
+    return [country_name]
+
 @app.callback(
     [Output('cases-timeline', "figure"),
-    Output('cases-title', 'children')],
-    [Input('country-table', "selected_rows"), Input('map', 'clickData')])
-def update_cases_graph(selected_rows, clickData, line_color="#FFBF00", case_type="confirmed"):
-   return line_graph(selected_rows, clickData, line_color, case_type)
+     Output('cases-title', 'children')], [
+         Input('click-value', "children")
+     ])
+def update_cases_graph(click_value,
+                       line_color="#FFBF00",
+                       case_type="confirmed"):
+    return line_graph(click_value, line_color, case_type)
 
 @app.callback(
     [Output('deaths-timeline', "figure"),
-    Output('deaths-title', 'children')],
-    [Input('country-table', "selected_rows"), Input('map', 'clickData')])
-def update_deaths_graph(selected_rows, clickData, line_color="#FA5858", case_type="deaths"):
-    return line_graph(selected_rows, clickData, line_color, case_type)
+     Output('deaths-title', 'children')], [
+         Input('click-value', "children")
+     ])
+def update_deaths_graph(click_value, line_color="#FA5858", case_type="deaths"):
+    return line_graph(click_value, line_color, case_type)
 
-@app.callback(
-    [Output('recovered-timeline', "figure"),
-    Output('recovered-title', 'children')],
-    [Input('country-table', "selected_rows"), Input('map', 'clickData')])
-def update_recovered_graph(selected_rows, clickData, line_color="#31B404", case_type="recovered"):
-    return line_graph(selected_rows, clickData, line_color, case_type)
+@app.callback([
+    Output('recovered-timeline', "figure"),
+    Output('recovered-title', 'children')
+], [
+    Input('click-value', "children")
+])
+def update_recovered_graph(click_value, line_color="#31B404", case_type="recovered"):
+    return line_graph(click_value, line_color, case_type)
 
 
 
-def line_graph(selected_rows, clickData, line_color, case_type):
-    country_name = 'US'
-
-    data = []
-
-    if selected_rows == None and clickData == None:
-        data = get_time_line(country_name)
-    elif selected_rows == None:
-        hover_text = clickData['points'][0]['hovertext']
-        country_name = name_diff(hover_text)
-        data = get_time_line(country_name)
-    else:
-        country_name = dataframe.loc[int(selected_rows[0]), 'Country']
-        country_name = name_diff(country_name)
-        data = get_time_line(country_name)
-        
+def line_graph(click_value, line_color, case_type):
+    data = get_time_line(click_value)
+    country_name = click_value
     data["date"] = pd.to_datetime(data["date"], infer_datetime_format=False)
 
     template_total = "%{customdata} total cases on %{x}<extra></extra>"
-    
+
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
@@ -210,14 +251,3 @@ def line_graph(selected_rows, clickData, line_color, case_type):
         yaxis_title="Number of Cases"
     )
     return fig, country_name + " " + case_type + " Timeline"
-
-
-def name_diff(name):
-    if name == 'USA':
-        return 'US'
-    if name == 'S. Korea':
-        return "Korea, South"
-    if name == 'UK':
-        return "United Kingdom"
-    else:
-        return name

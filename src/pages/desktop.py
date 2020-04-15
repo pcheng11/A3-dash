@@ -66,7 +66,10 @@ news_col = dbc.Col(
 
 desktop_body = [
     html.Div(
-        id="intermediate-value", children="World", style={"display": "none"}
+        id="intermediate-value", children="US", style={"display": "none"}
+    ), 
+    html.Div(
+        id="click-value", children="US", style={"display": "none"}
     ), 
     header_row.header_row_card,
     dbc.Row(

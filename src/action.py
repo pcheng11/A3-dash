@@ -40,7 +40,7 @@ def get_countrys_data_dash():
             }
         }
     )
-    
+
     countries_label = []
     cases = []
     recovered = []
@@ -115,6 +115,7 @@ def get_table_data():
     df.sort_values('Cases', ascending=False, inplace=True)
     df = df.reset_index()
     print(df)
+
     return df
 
 def get_time_line(country):
@@ -131,3 +132,37 @@ def get_time_line(country):
 
     df = pd.DataFrame(data=data)
     return df
+
+
+def get_country_data(country):
+    print(country)
+    response = dynamo_client.get_item(
+        TableName='covid19Table',
+        Key={
+            'country': {
+                "S": country
+        }})
+    print(response)
+    return response['Item']
+
+
+def name_diff_table_2_timeline(name):
+    if name == 'USA':
+        return 'US'
+    if name == 'S. Korea':
+        return "Korea, South"
+    if name == 'UK':
+        return "United Kingdom"
+    else:
+        return name
+
+
+def name_diff_timeline_2_table(name):
+    if name == 'US':
+        return 'USA'
+    if name == "Korea, South":
+        return "S. Korea"
+    if name == 'United Kingdom':
+        return "UK"
+    else:
+        return name
