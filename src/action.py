@@ -97,6 +97,7 @@ def get_table_data():
     cases_col = []
     recovered_col = []
     deaths_col = []
+    location_col = []
     for item in response['Items']:
         if 'lat' not in item:
             continue
@@ -104,19 +105,21 @@ def get_table_data():
         cases_col.append(int(item['cases']['N']))
         recovered_col.append(int(item['recovered']['N']))
         deaths_col.append(int(item['deaths']['N']))
+        location_col.append([float(item['lat']['N']), float(item['long']['N'])])
 
     data = {
         'Country': country_col,
         'Cases': cases_col,
         'Recovered': recovered_col,
         'Deaths': deaths_col,
+        'Location': location_col
     }
     df = pd.DataFrame(data=data)
     df.sort_values('Cases', ascending=False, inplace=True)
     df = df.reset_index()
-    print(df)
 
     return df
+
 
 def get_time_line(country):
     response = dynamo_client.get_item(

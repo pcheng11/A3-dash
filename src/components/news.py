@@ -22,7 +22,7 @@ def get_news() -> dbc.ListGroup:
                     html.Div(
                         [   
                             dbc.Row([
-                                    html.H4(
+                                    html.H5(
                                         articles[i]['title'],
                                         style={"color": "white"}
                                     ),

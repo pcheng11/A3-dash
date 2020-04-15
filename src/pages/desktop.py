@@ -69,6 +69,9 @@ desktop_body = [
         id="intermediate-value", children="US", style={"display": "none"}
     ), 
     html.Div(
+        id="map-location", children=[38, -94], style={"display": "none"}
+    ),
+    html.Div(
         id="click-value", children="US", style={"display": "none"}
     ), 
     header_row.header_row_card,

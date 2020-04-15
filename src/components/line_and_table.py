@@ -166,6 +166,16 @@ table_card = dbc.Card(
 
 
 @app.callback(
+    [Output('map-location', "children")],
+    [Input('country-table', 'selected_rows')]
+)
+def get_long_lat(selected_rows):
+    if selected_rows is not None:
+        return [dataframe.loc[int(selected_rows[0]), 'Location']]
+    return [[38, -94]]
+
+
+@app.callback(
     [Output('click-value', "children")],
     [Input('map', "clickData"), Input('country-table', 'selected_rows')]
 )
@@ -176,7 +186,6 @@ def get_click(clickData, selected_rows):
     click_source = ""
     if ctx.triggered:
         click_source = ctx.triggered[0]['prop_id'].split('.')[0]
-        print(click_source)
         if click_source == "map":
             hover_text = clickData['points'][0]['hovertext']
             country_name = name_diff_table_2_timeline(hover_text)
