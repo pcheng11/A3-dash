@@ -10,4 +10,4 @@ import dash_bootstrap_components as dbc
 if __name__ == '__main__':
     app.layout = build_desktop_layout
     print('Currently running')
-    app.run_server()
+    app.run_server(port=5000)

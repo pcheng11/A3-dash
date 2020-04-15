@@ -5,7 +5,7 @@ import config
 import pandas as pd
 
 
-dynamo_client = boto3.client('dynamodb')
+dynamo_client = boto3.client('dynamodb', region_name='us-east-1')
 def get_countrys_data_dash():
     response = dynamo_client.batch_get_item(
         RequestItems={
@@ -142,7 +142,6 @@ def get_country_data(country):
             'country': {
                 "S": country
         }})
-    print(response)
     return response['Item']
 
 
