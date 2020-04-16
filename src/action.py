@@ -138,7 +138,6 @@ def get_time_line(country):
 
 
 def get_country_data(country):
-    print(country)
     response = dynamo_client.get_item(
         TableName='covid19Table',
         Key={

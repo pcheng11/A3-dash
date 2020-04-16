@@ -111,9 +111,8 @@ def update_header_country(children, country):
     Output('world-recovered', 'children'),
 ], [Input('intermediate-value', 'children')])
 def update_header_world(children):
-    response = requests.get("https://corona.lmao.ninja/all")
+    response = requests.get(config.GLOBAL_STAT_URL)
     data = json.loads(response.content)
-    print(data)
     confirmed = 'Confirmed ' + str(data['cases']) + ' (+' + str(data['todayCases']) + ')'
     deaths = 'Deaths ' + str(data['deaths']) + ' (+' + str(data['todayDeaths']) + ')'
     recovered = 'Recovered ' + str(data['recovered'])

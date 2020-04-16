@@ -2,3 +2,4 @@ a3-env/
 coverage/
 __pycache__/
 .vscode/
+a3-dash.pem

@@ -12,31 +12,7 @@ import json
 import dash
 
 dataframe = get_table_data()
-# def get_table_data() -> dbc.ListGroup:
-#     table_card = dbc.ListGroup(
-#                                 [
-#                                     dbc.ListGroupItem(
-#                                         [
-#                                             html.Div(
-#                                                 [
-#                                                     dbc.Row([
-#                                                         dbc.Col(
-#                                                             data[i]['country'],
-#                                                             width=6
-#                                                         ),
-#                                                         dbc.Col(
-#                                                             data[i]['cases'],
-#                                                             width=6
-#                                                         )
-#                                                     ])
-#                                                 ]
-#                                             )
-#                                         ]
-#                                     )
-#                                     for i in range(0, len(data))
-#                                 ]
-#                             )
-#     return table_card
+
 
 table = dash_table.DataTable(
         id="country-table",
@@ -54,32 +30,39 @@ table = dash_table.DataTable(
                 "type": "numeric",
             },
         ],
+        sort_action="native",
         editable=False,
         row_selectable='single',
         style_as_list_view=True,
         fixed_rows={"headers": True},
         style_table={
-            "width": "100%",
             'overflowY': 'scroll',
-             'height': '100%'
+            'height': '100%'
         },
         style_data={
             'whiteSpace': 'normal',
             'height': 'auto'
         },
         style_header={
-            "fontWeight": "bold",
+            'font-size': '2vh',
+            'fontWeight': 'bold',
             "font": "Lato, sans-serif",
             "height": "1.5vw",
+            'padding':'5px'
         },
         style_cell={
             "font-family": "Lato, sans-serif",
-            "border-bottom": "0.01rem solid #1C1C1C",
+            'font-size': '1.7vh',
+            "border-top": 'None',
+            "border-bottom": "0.005rem solid #1C1C1C",
             "backgroundColor": "#000000",
             "color": "#000000",
             'textOverflow': 'ellipsis',
+            'padding': '15px',
             "height": "2.8vw",
-            'maxWidth': '0.1vw'
+            'maxWidth': '0.01vw',
+            'minWidth': '0.01vw',
+            'textAlign': 'left'
         },
         style_cell_conditional=[
             {
@@ -160,8 +143,9 @@ line_chart_recovered_card = dbc.Card(
 table_card = dbc.Card(
                         dbc.CardBody(
                             table,
+                            style={"padding": "0px !important"}
                         ),
-                        style={"height": "100%", "overflow-y": "scroll"}
+                        style={"height": "100%", "overflow-y": "scroll", "padding": "0px !important"}
                     )
 
 
